@@ -2,7 +2,7 @@
 
 A library to work with CPFs.
 
-[![Hex pm](https://img.shields.io/hexpm/v/cpf.svg?style=flat)](https://hex.pm/packages/ulissesalmeida)
+[![Hex pm](https://img.shields.io/hexpm/v/cpf.svg?style=flat)](https://www.hex.pm/packages/cpf)
 
 CPF is an acronym for "Cadastro de Pessoa Físicas," it's a unique number
 associated with a person that the Brazilian government maintains. With this number,
