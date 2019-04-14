@@ -1,5 +1,9 @@
 # CPF
 
+A library to work with CPFs.
+
+[![Hex pm](https://img.shields.io/hexpm/v/cpf.svg?style=flat)](https://hex.pm/packages/ulissesalmeida)
+
 CPF is an acronym for "Cadastro de Pessoa Físicas," it's a unique number
 associated with a person that the Brazilian government maintains. With this number,
 it is possible to check if a person has any irregularity on tax payments, if they
