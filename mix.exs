@@ -12,7 +12,7 @@ defmodule CPF.MixProject do
       deps: deps(),
       elixirc_paths: elixirc_paths(Mix.env()),
       name: "CPF",
-      source_url: "https://github.com/ulissesalmeida/cpf"
+      docs: docs()
     ]
   end
 
@@ -44,6 +44,13 @@ defmodule CPF.MixProject do
       maintainers: ["Ulisses Almeida"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/ulissesalmeida/cpf"}
+    ]
+  end
+
+  def docs do
+    [
+      source_url: "https://github.com/ulissesalmeida/cpf",
+      extras: ["README.md"]
     ]
   end
 end
