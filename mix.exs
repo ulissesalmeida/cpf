@@ -10,6 +10,7 @@ defmodule CPF.MixProject do
       description: description(),
       package: package(),
       deps: deps(),
+      elixirc_paths: elixirc_paths(Mix.env()),
       name: "CPF",
       source_url: "https://github.com/ulissesalmeida/cpf"
     ]
@@ -29,6 +30,9 @@ defmodule CPF.MixProject do
     ]
   end
 
+  defp elixirc_paths(:test), do: ["lib", "test/support.exs"]
+  defp elixirc_paths(_), do: ["lib"]
+
   def description do
     "A Brazilian CPF validation written in Elixir."
   end
@@ -36,6 +40,7 @@ defmodule CPF.MixProject do
   def package do
     [
       name: "cpf",
+      maintainers: ["Ulisses Almeida"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/ulissesalmeida/cpf"}
     ]
