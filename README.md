@@ -39,6 +39,18 @@ true
 
 iex> CPF.valid?(563_606_676_72)
 false
+
+iex> CPF.valid?("563.606.676-73")
+true
+
+iex> CPF.valid?("563.606.676-72")
+false
+
+iex> CPF.valid?("56360667673")
+true
+
+iex> CPF.valid?("56360667672")
+false
 ```
 
 ## Why not other libraries?
