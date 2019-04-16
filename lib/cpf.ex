@@ -20,7 +20,11 @@ defmodule CPF do
       false
   """
   @spec valid?(integer) :: boolean
-  def valid?(cpf) when is_integer(cpf) do
+  def valid?(cpf) when is_integer(cpf), do: validate(cpf)
+
+  def valid?(_cpf), do: false
+
+  defp validate(cpf) do
     cpf_digits = Integer.digits(cpf)
     padding = 11 - length(cpf_digits)
     same_digits? = cpf_digits |> Enum.uniq() |> length() == 1
@@ -35,8 +39,6 @@ defmodule CPF do
       false
     end
   end
-
-  def valid?(_cpf), do: false
 
   defp add_padding(digits, 0), do: digits
 
