@@ -3,6 +3,11 @@ defmodule CPF do
   CPF mobulde provides functions to verify if a CPF is valid.
   """
 
+  @typedoc """
+    A custom CPF type that can be a number or string
+  """
+  @type cpf_type :: integer | String.t()
+
   @doc """
   Returns `true` the given `cpf` is valid, otherwise `false`.
 
