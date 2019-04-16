@@ -19,7 +19,7 @@ defmodule CPF do
       iex> CPF.valid?(563_606_676_72)
       false
   """
-  @spec valid?(integer) :: boolean
+  @spec valid?(cpf_type) :: boolean
   def valid?(cpf) when is_integer(cpf), do: validate(cpf)
 
   def valid?(_cpf), do: false
