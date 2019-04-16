@@ -22,6 +22,18 @@ defmodule CPF do
   @spec valid?(cpf_type) :: boolean
   def valid?(cpf) when is_integer(cpf), do: validate(cpf)
 
+  def valid?(cpf) when is_binary(cpf) do
+    if has_valid_string_format?(cpf) do
+      cpf
+      |> String.split([".", "-"])
+      |> Enum.join()
+      |> String.to_integer()
+      |> validate()
+    else
+      false
+    end
+  end
+
   def valid?(_cpf), do: false
 
   defp validate(cpf) do
