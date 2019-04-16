@@ -40,6 +40,21 @@ defmodule CPF do
     end
   end
 
+  defp has_valid_string_format?(cpf) do
+    case String.length(cpf) do
+      14 ->
+        cpf_regex = ~r/([0-9]){3}\.([0-9]){3}\.([0-9]){3}\-([0-9]){2}/
+        Regex.match?(cpf_regex, cpf)
+
+      11 ->
+        cpf_regex = ~r/([0-9]){3}([0-9]){3}([0-9]){3}([0-9]){2}/
+        Regex.match?(cpf_regex, cpf)
+
+      _ ->
+        false
+    end
+  end
+
   defp add_padding(digits, 0), do: digits
 
   defp add_padding(digits, padding) do
