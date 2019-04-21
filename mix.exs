@@ -10,6 +10,7 @@ defmodule CPF.MixProject do
       description: description(),
       package: package(),
       deps: deps(),
+      test_coverage: [tool: ExCoveralls],
       elixirc_paths: elixirc_paths(Mix.env()),
       name: "CPF",
       docs: docs()
@@ -26,7 +27,8 @@ defmodule CPF.MixProject do
     [
       {:ex_doc, "~> 0.20.1", only: [:dev], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.10", only: [:dev, :test], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]

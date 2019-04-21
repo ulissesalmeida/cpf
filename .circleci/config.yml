@@ -15,7 +15,7 @@ jobs:
       - run: mix deps.get
       - run: mix format --check-formatted
       - run: mix credo --strict
-      - run: mix test
+      - run: mix coveralls.circle
       - run: mix dialyzer
       - save_cache:
           key: v2-deps-cache-{{ checksum "mix.lock" }}
