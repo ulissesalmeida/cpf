@@ -3,6 +3,11 @@ defmodule CPF do
   CPF mobulde provides functions to verify if a CPF is valid.
   """
 
+  @typedoc """
+    A custom CPF type that can be a number or string
+  """
+  @type cpf_type :: integer | String.t()
+
   @doc """
   Returns `true` the given `cpf` is valid, otherwise `false`.
 
@@ -13,9 +18,37 @@ defmodule CPF do
 
       iex> CPF.valid?(563_606_676_72)
       false
+
+      iex> CPF.valid?("563.606.676-73")
+      true
+
+      iex> CPF.valid?("563.606.676-72")
+      false
+
+      iex> CPF.valid?("56360667673")
+      true
+
+      iex> CPF.valid?("56360667672")
+      false
   """
-  @spec valid?(integer) :: boolean
-  def valid?(cpf) when is_integer(cpf) do
+  @spec valid?(cpf_type) :: boolean
+  def valid?(cpf) when is_integer(cpf), do: validate(cpf)
+
+  def valid?(cpf) when is_binary(cpf) do
+    if has_valid_string_format?(cpf) do
+      cpf
+      |> String.split([".", "-"])
+      |> Enum.join()
+      |> String.to_integer()
+      |> validate()
+    else
+      false
+    end
+  end
+
+  def valid?(_cpf), do: false
+
+  defp validate(cpf) do
     cpf_digits = Integer.digits(cpf)
     padding = 11 - length(cpf_digits)
     same_digits? = cpf_digits |> Enum.uniq() |> length() == 1
@@ -31,7 +64,20 @@ defmodule CPF do
     end
   end
 
-  def valid?(_cpf), do: false
+  defp has_valid_string_format?(cpf) do
+    case String.length(cpf) do
+      14 ->
+        cpf_regex = ~r/([0-9]){3}\.([0-9]){3}\.([0-9]){3}\-([0-9]){2}/
+        Regex.match?(cpf_regex, cpf)
+
+      11 ->
+        cpf_regex = ~r/([0-9]){3}([0-9]){3}([0-9]){3}([0-9]){2}/
+        Regex.match?(cpf_regex, cpf)
+
+      _ ->
+        false
+    end
+  end
 
   defp add_padding(digits, 0), do: digits
 
