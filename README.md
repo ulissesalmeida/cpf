@@ -25,7 +25,7 @@ by adding `cpf` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:cpf, "~> 0.1.0"}
+    {:cpf, "~> 0.2.0"}
   ]
 end
 ```
