@@ -12,6 +12,7 @@ jobs:
             - v2-deps-cache-{{ checksum "mix.lock" }}
             - v2-deps-cache
       - run: mix local.hex --force
+      - run: mix local.rebar --force
       - run: mix deps.get
       - run: mix format --check-formatted
       - run: mix credo --strict
