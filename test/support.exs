@@ -1,7 +1,9 @@
 defmodule CPF.Test.Support do
+  alias __MODULE__
+
   defmacro to_11_digits(digit) do
     quote do
-      CPF.Test.Support.eleven_digits(unquote(digit))
+      Support.eleven_digits(unquote(digit))
     end
   end
 

@@ -9,6 +9,7 @@ defmodule CPFTest do
     import CPF, only: [valid?: 1]
 
     test "returns true when CPF is valid" do
+      # credo:disable-for-next-line
       assert valid?(044_858_476_08)
       assert valid?("044.858.476-08")
       assert valid?("04485847608")
@@ -16,9 +17,11 @@ defmodule CPFTest do
 
     @invalid_cpfs [
                     "invalid",
+                    # credo:disable-for-next-line
                     123_456_789_10,
                     "123.456.789-10",
                     0,
+                    # credo:disable-for-next-line
                     123_456_789_09.0,
                     "123456789090"
                   ] ++ Enum.map(1..9, &to_11_digits/1)
