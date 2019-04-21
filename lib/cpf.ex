@@ -6,7 +6,7 @@ defmodule CPF do
   @typedoc """
     A custom CPF type that can be a number or string
   """
-  @type cpf_type :: integer | String.t()
+  @type t :: integer | String.t()
 
   @doc """
   Returns `true` the given `cpf` is valid, otherwise `false`.
@@ -22,6 +22,9 @@ defmodule CPF do
       iex> CPF.valid?("563.606.676-73")
       true
 
+      iex> CPF.valid?("563/60.6-676/73")
+      false
+
       iex> CPF.valid?("563.606.676-72")
       false
 
@@ -31,24 +34,8 @@ defmodule CPF do
       iex> CPF.valid?("56360667672")
       false
   """
-  @spec valid?(cpf_type) :: boolean
-  def valid?(cpf) when is_integer(cpf), do: validate(cpf)
-
-  def valid?(cpf) when is_binary(cpf) do
-    if has_valid_string_format?(cpf) do
-      cpf
-      |> String.split([".", "-"])
-      |> Enum.join()
-      |> String.to_integer()
-      |> validate()
-    else
-      false
-    end
-  end
-
-  def valid?(_cpf), do: false
-
-  defp validate(cpf) do
+  @spec valid?(t) :: boolean
+  def valid?(cpf) when is_integer(cpf) do
     cpf_digits = Integer.digits(cpf)
     padding = 11 - length(cpf_digits)
     same_digits? = cpf_digits |> Enum.uniq() |> length() == 1
@@ -64,20 +51,29 @@ defmodule CPF do
     end
   end
 
-  defp has_valid_string_format?(cpf) do
-    case String.length(cpf) do
-      14 ->
-        cpf_regex = ~r/([0-9]){3}\.([0-9]){3}\.([0-9]){3}\-([0-9]){2}/
-        Regex.match?(cpf_regex, cpf)
+  def valid?(
+        <<left_digits::bytes-size(3)>> <>
+          "." <>
+          <<middle_digits::bytes-size(3)>> <>
+          "." <>
+          <<right_digits::bytes-size(3)>> <>
+          "-" <>
+          <<verifier_digits::bytes-size(2)>>
+      ) do
+    valid?(left_digits <> middle_digits <> right_digits <> verifier_digits)
+  end
 
-      11 ->
-        cpf_regex = ~r/([0-9]){3}([0-9]){3}([0-9]){3}([0-9]){2}/
-        Regex.match?(cpf_regex, cpf)
+  def valid?(cpf) when is_binary(cpf) do
+    case Integer.parse(cpf) do
+      {cpf_int, ""} ->
+        valid?(cpf_int)
 
       _ ->
         false
     end
   end
+
+  def valid?(_cpf), do: false
 
   defp add_padding(digits, 0), do: digits
 
