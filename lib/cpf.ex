@@ -4,7 +4,7 @@ defmodule CPF do
   """
 
   @typedoc """
-    A custom CPF type that can be a number or string
+  A custom CPF type that can be a number or string
   """
   @type t :: integer | String.t()
 
