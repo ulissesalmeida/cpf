@@ -1,9 +1,19 @@
-# Elixir CircleCI 2.0 configuration file
-version: 2
+# Elixir CircleCI 2.1 configuration file
+version: 2.1
 jobs:
   build:
+    parameters:
+      elixir_version:
+        description: "Elixir version"
+        type: string
+        default: "1.8"
+      steps:
+        description: "Steps to execute after build"
+        type: steps
+        default:
+          - run: mix test
     docker:
-      - image: circleci/elixir:1.8
+      - image: circleci/elixir:<< parameters.elixir_version >>
     environment:
       MIX_ENV: test
     working_directory: ~/repo
@@ -11,18 +21,37 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-deps-cache-{{ checksum "mix.lock" }}
-            - v2-deps-cache
+            - v1-test-cache-<< parameters.elixir_version >>-{{ checksum "mix.lock" }}
+            - v1-test-cache-<< parameters.elixir_version >>
       - run: mix local.hex --force
       - run: mix local.rebar --force
-      - run: mix deps.get
-      - run: mix format --check-formatted
-      - run: mix credo --strict
-      - run: mix coveralls.circle
-      - run: mix dialyzer
+      - run: mix do deps.get, deps.compile, compile
+
+      - steps: << parameters.steps >>
+
       - save_cache:
-          key: v2-deps-cache-{{ checksum "mix.lock" }}
+          key:  v1-test-cache-<< parameters.elixir_version >>-{{ checksum "mix.lock" }}
           paths:
             - _build
             - deps
             - ~/.mix`
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build:
+          name: "Elixir 1.8"
+          steps:
+            - run: mix format --check-formatted
+            - run: mix credo --strict
+            - run: mix coveralls.circle
+            - run: mix dialyzer
+      - build:
+          name: "Elixir 1.7"
+          elixir_version: "1.7"
+      - build:
+          name: "Elixir 1.6"
+          elixir_version: "1.6"
+      - build:
+          name: "Elixir 1.5"
+          elixir_version: "1.5"
