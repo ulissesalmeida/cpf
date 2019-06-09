@@ -14,7 +14,8 @@ defmodule Bench.MixProject do
 
   defp aliases() do
     [
-      "bench.validate": ["run validate.exs"]
+      "bench.validate": ["run validate.exs"],
+      "bench.format": ["run format.exs"]
     ]
   end
 

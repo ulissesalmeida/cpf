@@ -3,10 +3,46 @@ defmodule CPF do
   CPF module that provides functions to verify if a CPF is valid.
   """
 
+  defstruct [:digits]
+
+  # NOTE: Remove Elixir 1.5 support when lauching CPF 1.0
+  # defguardp is_pos_integer(number) when is_integer(number) and number >= 0
+
+  @typep digit :: pos_integer()
+
   @typedoc """
-  A custom CPF type that can be a number or string
+  The CPF type. It' composed of eleven digits(0-9]).
   """
-  @type t :: integer | String.t()
+  @opaque t :: %__MODULE__{
+            digits: {digit, digit, digit, digit, digit, digit, digit, digit, digit, digit, digit}
+          }
+
+  @doc """
+  Initializes a CPF.
+
+  ## Examples
+
+  iex> CPF.new(563_606_676_73)
+  #CPF<563.606.676-73>
+
+  iex> CPF.new("56360667673")
+  #CPF<563.606.676-73>
+
+  This function doesn't check if CPF numbers are valid, only use this function
+  if the given `String.t` or the integer was validated before.
+  """
+  @spec new(String.t() | pos_integer) :: t
+  def new(cpf) when is_integer(cpf) and cpf >= 0 do
+    %__MODULE__{
+      digits: to_digits(cpf)
+    }
+  end
+
+  def new(cpf) when is_binary(cpf) do
+    %__MODULE__{
+      digits: cpf |> String.to_integer() |> to_digits()
+    }
+  end
 
   @doc """
   Returns `true` the given `cpf` is valid, otherwise `false`.
@@ -34,8 +70,8 @@ defmodule CPF do
       iex> CPF.valid?("56360667672")
       false
   """
-  @spec valid?(t) :: boolean
-  def valid?(cpf) when is_integer(cpf) do
+  @spec valid?(input :: String.t() | pos_integer) :: boolean
+  def valid?(cpf) when is_integer(cpf) and cpf >= 0 do
     cpf_digits = Integer.digits(cpf)
     padding = 11 - length(cpf_digits)
     same_digits? = cpf_digits |> Enum.uniq() |> length() == 1
@@ -75,6 +111,30 @@ defmodule CPF do
 
   def valid?(_cpf), do: false
 
+  @doc """
+  Returns a formatted string from a given  `cpf`.
+
+  ## Examples
+
+  iex> 563_606_676_73 |> CPF.new() |> CPF.format()
+  "563.606.676-73"
+  """
+  @spec format(cpf :: t()) :: String.t()
+  def format(%CPF{digits: digits}) do
+    {dig_1, dig_2, dig_3, dig_4, dig_5, dig_6, dig_7, dig_8, dig_9, dig_10, dig_11} = digits
+
+    to_string(dig_1) <>
+      to_string(dig_2) <>
+      to_string(dig_3) <>
+      "." <>
+      to_string(dig_4) <>
+      to_string(dig_5) <>
+      to_string(dig_6) <>
+      "." <>
+      to_string(dig_7) <>
+      to_string(dig_8) <> to_string(dig_9) <> "-" <> to_string(dig_10) <> to_string(dig_11)
+  end
+
   defp add_padding(digits, 0), do: digits
 
   defp add_padding(digits, padding) do
@@ -110,5 +170,27 @@ defmodule CPF do
 
   defp extract_given_verifier_digits(digits) do
     {elem(digits, 9), elem(digits, 10)}
+  end
+
+  defp to_digits(integer) do
+    digits = Integer.digits(integer)
+    padding = 11 - length(digits)
+
+    if padding >= 0 do
+      digits
+      |> add_padding(padding)
+      |> List.to_tuple()
+    else
+      raise ArgumentError, "it has more than 11 digits"
+    end
+  end
+
+  defimpl Inspect do
+    import Inspect.Algebra
+
+    def inspect(cpf, opts) do
+      formatted_cpf = cpf |> CPF.format() |> color(:atom, opts)
+      concat(["#CPF<", formatted_cpf, ">"])
+    end
   end
 end

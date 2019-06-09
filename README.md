@@ -7,10 +7,10 @@ A library to work with CPFs.
 [![Coverage Status](https://coveralls.io/repos/github/ulissesalmeida/cpf/badge.svg?branch=master)](https://coveralls.io/github/ulissesalmeida/cpf?branch=master)
 
 CPF is an acronym for "Cadastro de Pessoa Físicas," it's a unique number
-associated with a person that the Brazilian government maintains. With this number,
-it is possible to check if a person has any irregularity on tax payments, if they
-are alive and many other status that are provided from Brazilian government services
-or private company services.
+associated with a person that the Brazilian government maintains. With this
+number, it is possible to check to retrieve information about the person. For
+example, some companies or government services can offer data about the CPF like
+ the person's name, or if the person is alive or has debts.
 
 This library provides a validation that checks if the number is a valid CPF
 number. The CPF has check digit algorithm is similar to
@@ -53,6 +53,23 @@ true
 iex> CPF.valid?("56360667672")
 false
 ```
+
+## CPF Formatting
+
+If you have a valid CPF strings or integer in hands, you can use `CPF.new/1` and
+in sequence call `CPF.format/1`:
+
+```elixir
+iex> 4485847608 |> CPF.new() |> CPF.format()
+"044.858.476-08"
+
+iex> "04485847608" |> CPF.new() |> CPF.format()
+"044.858.476-08"
+```
+
+The `CPF.format/1` expects the input be wrapped in the CPF type. Remember, only
+use `CPF.new` with valid CPFs, no other checks are done there. If you need some
+validation, use `CPF.cast/1`.
 
 ## Why not other libraries?
 
