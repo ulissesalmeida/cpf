@@ -6,9 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2019-06-16
+### Added
+- Add `CPF.cast/1` and `CPF.cast!/1` feature
+
+### Deprecated
+- Deprecated `CPF.valid?/1` with invalid types
+
 ## [0.3.0] - 2019-06-09
 ### Added
-- Add `CPF.new/1` and `CPF.format` feature
+- Add `CPF.new/1` and `CPF.format/1` feature
+
+### Deprecated
+- Deprecated Elixir `1.5.0`
 
 ## [0.2.1] - 2019-04-29
 ### Fixed
