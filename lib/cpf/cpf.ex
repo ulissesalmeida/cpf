@@ -71,45 +71,21 @@ defmodule CPF do
       false
   """
   @spec valid?(input :: String.t() | pos_integer) :: boolean
-  def valid?(cpf) when is_integer(cpf) and cpf >= 0 do
-    cpf_digits = Integer.digits(cpf)
-    padding = 11 - length(cpf_digits)
-    same_digits? = cpf_digits |> Enum.uniq() |> length() == 1
-
-    if padding >= 0 && !same_digits? do
-      cpf_digits = cpf_digits |> add_padding(padding) |> List.to_tuple()
-      {v1, v2} = calculate_verifier_digits(cpf_digits)
-      {given_v1, given_v2} = extract_given_verifier_digits(cpf_digits)
-
-      v1 == given_v1 && v2 == given_v2
-    else
-      false
+  def valid?(cpf) when (is_integer(cpf) and cpf >= 0) or is_binary(cpf) do
+    case cast(cpf) do
+      {:ok, _cpf} -> true
+      {:error, _reason} -> false
     end
   end
 
-  def valid?(
-        <<left_digits::bytes-size(3)>> <>
-          "." <>
-          <<middle_digits::bytes-size(3)>> <>
-          "." <>
-          <<right_digits::bytes-size(3)>> <>
-          "-" <>
-          <<verifier_digits::bytes-size(2)>>
-      ) do
-    valid?(left_digits <> middle_digits <> right_digits <> verifier_digits)
+  def valid?(_cpf) do
+    IO.warn("""
+    Calling `CPF.valid?/1` with invalid types is deprecated and will be removed
+    on version 1.0.0. Only call this function with positive integers or strings.
+    """)
+
+    false
   end
-
-  def valid?(cpf) when is_binary(cpf) do
-    case Integer.parse(cpf) do
-      {cpf_int, ""} ->
-        valid?(cpf_int)
-
-      _ ->
-        false
-    end
-  end
-
-  def valid?(_cpf), do: false
 
   @doc """
   Returns a formatted string from a given  `cpf`.
@@ -133,6 +109,84 @@ defmodule CPF do
       "." <>
       to_string(dig_7) <>
       to_string(dig_8) <> to_string(dig_9) <> "-" <> to_string(dig_10) <> to_string(dig_11)
+  end
+
+  @doc """
+  Builds a CPF struct by validating its digits and format. Returns an ok/error tuple for
+  valid/invalid CPFs.
+
+  ## Examples
+  iex> CPF.cast(563_606_676_73)
+  {:ok, CPF.new(56360667673)}
+
+  iex> CPF.cast(563_606_676_72)
+  {:error, %CPF.CastingError{reason: :invalid_verifier}}
+  """
+  @spec cast(String.t() | pos_integer) :: {:ok, t()} | {:error, CPF.CastingError.t()}
+  def cast(cpf) when is_integer(cpf) and cpf >= 0 do
+    cpf_digits = Integer.digits(cpf)
+    padding = 11 - length(cpf_digits)
+    same_digits? = cpf_digits |> Enum.uniq() |> length() == 1
+
+    cond do
+      padding < 0 ->
+        {:error, %CPF.CastingError{reason: :too_long}}
+
+      same_digits? ->
+        {:error, %CPF.CastingError{reason: :same_digits}}
+
+      true ->
+        cpf_digits = cpf_digits |> add_padding(padding) |> List.to_tuple()
+        {v1, v2} = calculate_verifier_digits(cpf_digits)
+        {given_v1, given_v2} = extract_given_verifier_digits(cpf_digits)
+
+        if v1 == given_v1 && v2 == given_v2 do
+          {:ok, %CPF{digits: cpf_digits}}
+        else
+          {:error, %CPF.CastingError{reason: :invalid_verifier}}
+        end
+    end
+  end
+
+  def cast(
+        <<left_digits::bytes-size(3)>> <>
+          "." <>
+          <<middle_digits::bytes-size(3)>> <>
+          "." <>
+          <<right_digits::bytes-size(3)>> <>
+          "-" <>
+          <<verifier_digits::bytes-size(2)>>
+      ) do
+    cast(left_digits <> middle_digits <> right_digits <> verifier_digits)
+  end
+
+  def cast(cpf) when is_binary(cpf) do
+    case Integer.parse(cpf) do
+      {cpf_int, ""} ->
+        cast(cpf_int)
+
+      _ ->
+        {:error, %CPF.CastingError{reason: :invalid_format}}
+    end
+  end
+
+  @doc """
+  Builds a CPF struct by validating its digits and format. Returns an CPF type
+  or raises an `CPF.CastingError` exception.
+
+  ## Examples
+  iex> CPF.cast!(563_606_676_73)
+  #CPF<563.606.676-73>
+
+  iex> CPF.cast!(563_606_676_72)
+  ** (CPF.CastingError) invalid_verifier
+  """
+  @spec cast!(String.t() | pos_integer) :: t()
+  def cast!(cpf) do
+    case cast(cpf) do
+      {:ok, cpf} -> cpf
+      {:error, exception} -> raise exception
+    end
   end
 
   defp add_padding(digits, 0), do: digits

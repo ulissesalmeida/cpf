@@ -59,4 +59,88 @@ defmodule CPFTest do
       assert "04485847608" |> CPF.new() |> format() == "044.858.476-08"
     end
   end
+
+  describe "cast/1" do
+    import CPF, only: [cast: 1]
+
+    test "casts a valid integer CPF" do
+      expected_cpf = CPF.new(4_485_847_608)
+
+      assert {:ok, ^expected_cpf} = cast(4_485_847_608)
+    end
+
+    test "casts a valid string CPF" do
+      expected_cpf = CPF.new("04485847608")
+
+      assert {:ok, ^expected_cpf} = cast("04485847608")
+    end
+
+    test "casts a valid formatted CPF" do
+      expected_cpf = CPF.new("04485847608")
+
+      assert {:ok, ^expected_cpf} = cast("044.858.476-08")
+    end
+
+    test "returns error for too long CPF" do
+      assert {:error, %CPF.CastingError{reason: :too_long}} = cast("044858476080909090")
+    end
+
+    test "returns error for invalid digit verifier" do
+      assert {:error, %CPF.CastingError{reason: :invalid_verifier}} = cast("04485847607")
+    end
+
+    test "returns error for same digits" do
+      assert {:error, %CPF.CastingError{reason: :same_digits}} = cast("11111111111")
+    end
+
+    test "returns error for a invalid format" do
+      assert {:error, %CPF.CastingError{reason: :invalid_format}} = cast("044/858/476-08")
+    end
+  end
+
+  describe "cast!" do
+    import CPF, only: [cast!: 1]
+
+    test "casts a valid integer CPF" do
+      expected_cpf = CPF.new(4_485_847_608)
+
+      assert ^expected_cpf = cast!(4_485_847_608)
+    end
+
+    test "casts a valid string CPF" do
+      expected_cpf = CPF.new("04485847608")
+
+      assert ^expected_cpf = cast!("04485847608")
+    end
+
+    test "casts a valid formatted CPF" do
+      expected_cpf = CPF.new("04485847608")
+
+      assert ^expected_cpf = cast!("044.858.476-08")
+    end
+
+    test "returns error for too long CPF" do
+      assert_raise CPF.CastingError, "too_long", fn ->
+        cast!("044858476080909090")
+      end
+    end
+
+    test "returns error for invalid digit verifier" do
+      assert_raise CPF.CastingError, "invalid_verifier", fn ->
+        cast!("04485847607")
+      end
+    end
+
+    test "returns error for same digits" do
+      assert_raise CPF.CastingError, "same_digits", fn ->
+        cast!("11111111111")
+      end
+    end
+
+    test "returns error for a invalid format" do
+      assert_raise CPF.CastingError, "invalid_format", fn ->
+        cast!("044/858/476-08")
+      end
+    end
+  end
 end

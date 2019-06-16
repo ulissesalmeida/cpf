@@ -7,10 +7,8 @@ A library to work with CPFs.
 [![Coverage Status](https://coveralls.io/repos/github/ulissesalmeida/cpf/badge.svg?branch=master)](https://coveralls.io/github/ulissesalmeida/cpf?branch=master)
 
 CPF is an acronym for "Cadastro de Pessoa Físicas," it's a unique number
-associated with a person that the Brazilian government maintains. With this
-number, it is possible to check to retrieve information about the person. For
-example, some companies or government services can offer data about the CPF like
- the person's name, or if the person is alive or has debts.
+associated to a person that the Brazilian government maintains. With this
+number, it is possible to check or retrieve information about a person.
 
 This library provides a validation that checks if the number is a valid CPF
 number. The CPF has check digit algorithm is similar to
@@ -53,6 +51,27 @@ true
 iex> CPF.valid?("56360667672")
 false
 ```
+
+## Casting CPFs
+
+The `CPF.cast/1` and `CPF.cast!/1` returns you the CPF value wrapped in a
+custom type with explicit digits.
+
+```elixir
+iex> CPF.cast("044.858.476-08")
+{:ok, #CPF<"044.858.476-08">}
+
+iex> CPF.cast("044.858.476-07")
+{:error, %CPF.CastingError{reason: :invalid_verifier}}
+
+iex> CPF.cast!("044.858.476-08")
+#CPF<"044.858.476-08">
+
+iex> CPF.cast!("044.858.476-07")
+** (CPF.CastingError) invalid verifier
+```
+
+With the casted CPF in hands, you can use `CPF.format/1`.
 
 ## CPF Formatting
 
