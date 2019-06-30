@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2019-06-30
+### Added
+- `to_string/1` and `CPF.to_integer/1`
+
+### Deprecated
+- Deprecated `CPF.cast/1` and `CPF.cast!/1` to favor `CPF.parse/1` and `CPF.parse!/1`
+
 ## [0.4.0] - 2019-06-16
 ### Added
 - Add `CPF.cast/1` and `CPF.cast!/1` feature

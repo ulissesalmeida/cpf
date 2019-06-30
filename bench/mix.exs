@@ -22,7 +22,7 @@ defmodule Bench.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:cpf, "~> 0.4.0", path: "../", override: true},
+      {:cpf, "~> 0.5.0", path: "../", override: true},
       # {:brcpfcnpj, "~> 0.2.0"},
       {:benchee, "~> 1.0"}
     ]
