@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2019-06-30
+
+### Fixed
+- Documentation examples
+
 ## [0.5.0] - 2019-06-30
 ### Added
 - `to_string/1` and `CPF.to_integer/1`
