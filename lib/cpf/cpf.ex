@@ -72,7 +72,7 @@ defmodule CPF do
   """
   @spec valid?(input :: String.t() | pos_integer) :: boolean
   def valid?(cpf) when (is_integer(cpf) and cpf >= 0) or is_binary(cpf) do
-    case cast(cpf) do
+    case parse(cpf) do
       {:ok, _cpf} -> true
       {:error, _reason} -> false
     end
@@ -116,39 +116,25 @@ defmodule CPF do
   valid/invalid CPFs.
 
   ## Examples
-  iex> CPF.cast(563_606_676_73)
-  {:ok, CPF.new(56360667673)}
+  iex> {:ok, cpf} = CPF.parse(563_606_676_73)
+  iex> cpf
+  #CPF<563.606.676-73>
 
-  iex> CPF.cast(563_606_676_72)
-  {:error, %CPF.CastingError{reason: :invalid_verifier}}
+  iex> CPF.parse(563_606_676_72)
+  {:error, %CPF.ParsingError{reason: :invalid_verifier}}
   """
-  @spec cast(String.t() | pos_integer) :: {:ok, t()} | {:error, CPF.CastingError.t()}
-  def cast(cpf) when is_integer(cpf) and cpf >= 0 do
-    cpf_digits = Integer.digits(cpf)
-    padding = 11 - length(cpf_digits)
-    same_digits? = cpf_digits |> Enum.uniq() |> length() == 1
+  @spec parse(String.t() | pos_integer) :: {:ok, t()} | {:error, CPF.ParsingError.t()}
+  def parse(cpf) when is_integer(cpf) and cpf >= 0 do
+    digits = Integer.digits(cpf)
 
-    cond do
-      padding < 0 ->
-        {:error, %CPF.CastingError{reason: :too_long}}
-
-      same_digits? ->
-        {:error, %CPF.CastingError{reason: :same_digits}}
-
-      true ->
-        cpf_digits = cpf_digits |> add_padding(padding) |> List.to_tuple()
-        {v1, v2} = calculate_verifier_digits(cpf_digits)
-        {given_v1, given_v2} = extract_given_verifier_digits(cpf_digits)
-
-        if v1 == given_v1 && v2 == given_v2 do
-          {:ok, %CPF{digits: cpf_digits}}
-        else
-          {:error, %CPF.CastingError{reason: :invalid_verifier}}
-        end
+    with {:ok, digits} <- add_padding(digits),
+         {:ok, digits} <- skip_same_digits(digits),
+         {:ok, digits} <- verify_digits(digits) do
+      {:ok, %CPF{digits: digits}}
     end
   end
 
-  def cast(
+  def parse(
         <<left_digits::bytes-size(3)>> <>
           "." <>
           <<middle_digits::bytes-size(3)>> <>
@@ -157,35 +143,69 @@ defmodule CPF do
           "-" <>
           <<verifier_digits::bytes-size(2)>>
       ) do
-    cast(left_digits <> middle_digits <> right_digits <> verifier_digits)
+    parse(left_digits <> middle_digits <> right_digits <> verifier_digits)
   end
 
-  def cast(cpf) when is_binary(cpf) do
+  def parse(cpf) when is_binary(cpf) do
     case Integer.parse(cpf) do
       {cpf_int, ""} ->
-        cast(cpf_int)
+        parse(cpf_int)
 
       _ ->
-        {:error, %CPF.CastingError{reason: :invalid_format}}
+        {:error, %CPF.ParsingError{reason: :invalid_format}}
     end
   end
 
   @doc """
   Builds a CPF struct by validating its digits and format. Returns an CPF type
-  or raises an `CPF.CastingError` exception.
+  or raises an `CPF.ParsingError` exception.
 
   ## Examples
-  iex> CPF.cast!(563_606_676_73)
+  iex> CPF.parse!(563_606_676_73)
   #CPF<563.606.676-73>
 
-  iex> CPF.cast!(563_606_676_72)
-  ** (CPF.CastingError) invalid_verifier
+  iex> CPF.parse!(563_606_676_72)
+  ** (CPF.ParsingError) invalid_verifier
   """
-  @spec cast!(String.t() | pos_integer) :: t()
+  @spec parse!(String.t() | pos_integer) :: t()
+  def parse!(cpf) do
+    case parse(cpf) do
+      {:ok, cpf} -> cpf
+      {:error, exception} -> raise exception
+    end
+  end
+
+  @doc false
+  def cast(cpf) do
+    IO.warn("
+    `CPF.cast/1` is deprecated and will be removed on version 1.0.0. Call `CPF.parse/1`
+    ")
+
+    case parse(cpf) do
+      {:error, %CPF.ParsingError{reason: reason}} -> {:error, %CPF.CastingError{reason: reason}}
+      ok -> ok
+    end
+  end
+
+  @doc false
   def cast!(cpf) do
+    IO.warn("
+    `CPF.cast!/1` is deprecated and will be removed on version 1.0.0. Call `CPF.parse!/1`
+    ")
+
     case cast(cpf) do
       {:ok, cpf} -> cpf
       {:error, exception} -> raise exception
+    end
+  end
+
+  defp add_padding(digits) do
+    padding = 11 - length(digits)
+
+    if padding >= 0 do
+      {:ok, add_padding(digits, padding)}
+    else
+      {:error, %CPF.ParsingError{reason: :too_long}}
     end
   end
 
@@ -193,6 +213,26 @@ defmodule CPF do
 
   defp add_padding(digits, padding) do
     add_padding([0 | digits], padding - 1)
+  end
+
+  defp skip_same_digits(digits) do
+    if digits |> Enum.uniq() |> length() == 1 do
+      {:error, %CPF.ParsingError{reason: :same_digits}}
+    else
+      {:ok, digits}
+    end
+  end
+
+  defp verify_digits(digits) do
+    cpf_digits = List.to_tuple(digits)
+    {v1, v2} = calculate_verifier_digits(cpf_digits)
+    {given_v1, given_v2} = extract_given_verifier_digits(cpf_digits)
+
+    if v1 == given_v1 && v2 == given_v2 do
+      {:ok, cpf_digits}
+    else
+      {:error, %CPF.ParsingError{reason: :invalid_verifier}}
+    end
   end
 
   defp calculate_verifier_digits(digits) do

@@ -60,86 +60,86 @@ defmodule CPFTest do
     end
   end
 
-  describe "cast/1" do
-    import CPF, only: [cast: 1]
+  describe "parse/1" do
+    import CPF, only: [parse: 1]
 
     test "casts a valid integer CPF" do
       expected_cpf = CPF.new(4_485_847_608)
 
-      assert {:ok, ^expected_cpf} = cast(4_485_847_608)
+      assert {:ok, ^expected_cpf} = parse(4_485_847_608)
     end
 
     test "casts a valid string CPF" do
       expected_cpf = CPF.new("04485847608")
 
-      assert {:ok, ^expected_cpf} = cast("04485847608")
+      assert {:ok, ^expected_cpf} = parse("04485847608")
     end
 
     test "casts a valid formatted CPF" do
       expected_cpf = CPF.new("04485847608")
 
-      assert {:ok, ^expected_cpf} = cast("044.858.476-08")
+      assert {:ok, ^expected_cpf} = parse("044.858.476-08")
     end
 
     test "returns error for too long CPF" do
-      assert {:error, %CPF.CastingError{reason: :too_long}} = cast("044858476080909090")
+      assert {:error, %CPF.ParsingError{reason: :too_long}} = parse("044858476080909090")
     end
 
     test "returns error for invalid digit verifier" do
-      assert {:error, %CPF.CastingError{reason: :invalid_verifier}} = cast("04485847607")
+      assert {:error, %CPF.ParsingError{reason: :invalid_verifier}} = parse("04485847607")
     end
 
     test "returns error for same digits" do
-      assert {:error, %CPF.CastingError{reason: :same_digits}} = cast("11111111111")
+      assert {:error, %CPF.ParsingError{reason: :same_digits}} = parse("11111111111")
     end
 
     test "returns error for a invalid format" do
-      assert {:error, %CPF.CastingError{reason: :invalid_format}} = cast("044/858/476-08")
+      assert {:error, %CPF.ParsingError{reason: :invalid_format}} = parse("044/858/476-08")
     end
   end
 
-  describe "cast!" do
-    import CPF, only: [cast!: 1]
+  describe "parse!" do
+    import CPF, only: [parse!: 1]
 
     test "casts a valid integer CPF" do
       expected_cpf = CPF.new(4_485_847_608)
 
-      assert ^expected_cpf = cast!(4_485_847_608)
+      assert ^expected_cpf = parse!(4_485_847_608)
     end
 
     test "casts a valid string CPF" do
       expected_cpf = CPF.new("04485847608")
 
-      assert ^expected_cpf = cast!("04485847608")
+      assert ^expected_cpf = parse!("04485847608")
     end
 
     test "casts a valid formatted CPF" do
       expected_cpf = CPF.new("04485847608")
 
-      assert ^expected_cpf = cast!("044.858.476-08")
+      assert ^expected_cpf = parse!("044.858.476-08")
     end
 
     test "returns error for too long CPF" do
-      assert_raise CPF.CastingError, "too_long", fn ->
-        cast!("044858476080909090")
+      assert_raise CPF.ParsingError, "too_long", fn ->
+        parse!("044858476080909090")
       end
     end
 
     test "returns error for invalid digit verifier" do
-      assert_raise CPF.CastingError, "invalid_verifier", fn ->
-        cast!("04485847607")
+      assert_raise CPF.ParsingError, "invalid_verifier", fn ->
+        parse!("04485847607")
       end
     end
 
     test "returns error for same digits" do
-      assert_raise CPF.CastingError, "same_digits", fn ->
-        cast!("11111111111")
+      assert_raise CPF.ParsingError, "same_digits", fn ->
+        parse!("11111111111")
       end
     end
 
     test "returns error for a invalid format" do
-      assert_raise CPF.CastingError, "invalid_format", fn ->
-        cast!("044/858/476-08")
+      assert_raise CPF.ParsingError, "invalid_format", fn ->
+        parse!("044/858/476-08")
       end
     end
   end

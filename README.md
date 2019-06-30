@@ -52,23 +52,23 @@ iex> CPF.valid?("56360667672")
 false
 ```
 
-## Casting CPFs
+## Parsing CPFs
 
-The `CPF.cast/1` and `CPF.cast!/1` returns you the CPF value wrapped in a
+The `CPF.parse/1` and `CPF.parse!/1` returns you the CPF value wrapped in a
 custom type with explicit digits.
 
 ```elixir
-iex> CPF.cast("044.858.476-08")
+iex> CPF.parse("044.858.476-08")
 {:ok, #CPF<"044.858.476-08">}
 
-iex> CPF.cast("044.858.476-07")
-{:error, %CPF.CastingError{reason: :invalid_verifier}}
+iex> CPF.parse("044.858.476-07")
+{:error, %CPF.ParsingError{reason: :invalid_verifier}}
 
-iex> CPF.cast!("044.858.476-08")
+iex> CPF.parse!("044.858.476-08")
 #CPF<"044.858.476-08">
 
-iex> CPF.cast!("044.858.476-07")
-** (CPF.CastingError) invalid verifier
+iex> CPF.parse!("044.858.476-07")
+** (CPF.ParsingError) invalid verifier
 ```
 
 With the casted CPF in hands, you can use `CPF.format/1`.
@@ -88,7 +88,7 @@ iex> "04485847608" |> CPF.new() |> CPF.format()
 
 The `CPF.format/1` expects the input be wrapped in the CPF type. Remember, only
 use `CPF.new` with valid CPFs, no other checks are done there. If you need some
-validation, use `CPF.cast/1`.
+validation, use `CPF.parse/1`.
 
 ## Why not other libraries?
 

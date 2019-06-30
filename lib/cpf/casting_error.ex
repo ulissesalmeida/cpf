@@ -1,3 +1,4 @@
+# Remove me when release 1.0.0
 defmodule CPF.CastingError do
   defexception reason: nil
 
