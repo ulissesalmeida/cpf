@@ -52,7 +52,22 @@ iex> CPF.valid?("56360667672")
 false
 ```
 
-## Parsing CPFs
+## Parsing and Storing CPFs
+
+If you want to store CPF as integer or as `String.t`, this library have
+you covered. You can do:
+
+```elixir
+iex> "044.858.476-08" |> CPF.parse!() |> CPF.to_integer()
+4485847608
+
+iex> "044.858.476-08" |> CPF.parse!() |> to_string()
+"04485847608"
+```
+
+Storing CPF as strings are easier for a human to read since the 0 padding digits
+are there. Meanwhile, storing as integers will allow you have better performance
+in CPF lookups.
 
 The `CPF.parse/1` and `CPF.parse!/1` returns you the CPF value wrapped in a
 custom type with explicit digits.
@@ -71,7 +86,8 @@ iex> CPF.parse!("044.858.476-07")
 ** (CPF.ParsingError) invalid verifier
 ```
 
-With the casted CPF in hands, you can use `CPF.format/1`.
+With the casted CPF in hands, you can use `CPF.format/1`, `CPF.to_integer/1` and
+`to_string/1`.
 
 ## CPF Formatting
 

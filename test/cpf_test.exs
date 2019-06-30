@@ -143,4 +143,22 @@ defmodule CPFTest do
       end
     end
   end
+
+  describe "to_string/1" do
+    test "represents as String.t" do
+      cpf = CPF.new("04485847608")
+
+      assert to_string(cpf) == "04485847608"
+    end
+  end
+
+  describe "to_integer/1" do
+    import CPF, only: [to_integer: 1]
+
+    test "represents as integer" do
+      cpf = CPF.new(4_485_847_608)
+
+      assert to_integer(cpf) == 4_485_847_608
+    end
+  end
 end

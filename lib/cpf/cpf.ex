@@ -22,11 +22,11 @@ defmodule CPF do
 
   ## Examples
 
-  iex> CPF.new(563_606_676_73)
-  #CPF<563.606.676-73>
+    iex> CPF.new(563_606_676_73)
+    #CPF<563.606.676-73>
 
-  iex> CPF.new("56360667673")
-  #CPF<563.606.676-73>
+    iex> CPF.new("56360667673")
+    #CPF<563.606.676-73>
 
   This function doesn't check if CPF numbers are valid, only use this function
   if the given `String.t` or the integer was validated before.
@@ -49,26 +49,26 @@ defmodule CPF do
 
   ## Examples
 
-      iex> CPF.valid?(563_606_676_73)
-      true
+    iex> CPF.valid?(563_606_676_73)
+    true
 
-      iex> CPF.valid?(563_606_676_72)
-      false
+    iex> CPF.valid?(563_606_676_72)
+    false
 
-      iex> CPF.valid?("563.606.676-73")
-      true
+    iex> CPF.valid?("563.606.676-73")
+    true
 
-      iex> CPF.valid?("563/60.6-676/73")
-      false
+    iex> CPF.valid?("563/60.6-676/73")
+    false
 
-      iex> CPF.valid?("563.606.676-72")
-      false
+    iex> CPF.valid?("563.606.676-72")
+    false
 
-      iex> CPF.valid?("56360667673")
-      true
+    iex> CPF.valid?("56360667673")
+    true
 
-      iex> CPF.valid?("56360667672")
-      false
+    iex> CPF.valid?("56360667672")
+    false
   """
   @spec valid?(input :: String.t() | pos_integer) :: boolean
   def valid?(cpf) when (is_integer(cpf) and cpf >= 0) or is_binary(cpf) do
@@ -116,12 +116,13 @@ defmodule CPF do
   valid/invalid CPFs.
 
   ## Examples
-  iex> {:ok, cpf} = CPF.parse(563_606_676_73)
-  iex> cpf
-  #CPF<563.606.676-73>
 
-  iex> CPF.parse(563_606_676_72)
-  {:error, %CPF.ParsingError{reason: :invalid_verifier}}
+    iex> {:ok, cpf} = CPF.parse(563_606_676_73)
+    iex> cpf
+    #CPF<563.606.676-73>
+
+    iex> CPF.parse(563_606_676_72)
+    {:error, %CPF.ParsingError{reason: :invalid_verifier}}
   """
   @spec parse(String.t() | pos_integer) :: {:ok, t()} | {:error, CPF.ParsingError.t()}
   def parse(cpf) when is_integer(cpf) and cpf >= 0 do
@@ -161,11 +162,12 @@ defmodule CPF do
   or raises an `CPF.ParsingError` exception.
 
   ## Examples
-  iex> CPF.parse!(563_606_676_73)
-  #CPF<563.606.676-73>
 
-  iex> CPF.parse!(563_606_676_72)
-  ** (CPF.ParsingError) invalid_verifier
+    iex> CPF.parse!(563_606_676_73)
+    #CPF<563.606.676-73>
+
+    iex> CPF.parse!(563_606_676_72)
+    ** (CPF.ParsingError) invalid_verifier
   """
   @spec parse!(String.t() | pos_integer) :: t()
   def parse!(cpf) do
@@ -173,6 +175,29 @@ defmodule CPF do
       {:ok, cpf} -> cpf
       {:error, exception} -> raise exception
     end
+  end
+
+  @doc """
+  Returns a tuple with the eleven digits of the given cpf.
+  """
+  @spec digits(t) :: tuple
+  def digits(%CPF{digits: digits}), do: digits
+
+  @doc """
+  Returns a integer representation of the given cpf.
+
+  ## Examples
+
+    iex> 4_485_847_608 |> CPF.new() |> CPF.to_integer()
+    4_485_847_608
+  """
+  @spec to_integer(t) :: pos_integer
+  def to_integer(%CPF{digits: digits}) do
+    0..10
+    |> Enum.reduce(0, fn i, sum ->
+      :math.pow(10, 10 - i) * elem(digits, i) + sum
+    end)
+    |> trunc()
   end
 
   @doc false
@@ -285,6 +310,22 @@ defmodule CPF do
     def inspect(cpf, opts) do
       formatted_cpf = cpf |> CPF.format() |> color(:atom, opts)
       concat(["#CPF<", formatted_cpf, ">"])
+    end
+  end
+
+  defimpl String.Chars do
+    @doc """
+    Returns a `String.t` representation of the given `cpf`.
+
+    ## Examples
+
+      iex> "04485847608" |> CPF.new() |> to_string()
+      "04485847608"
+    """
+    @spec to_string(CPF.t()) :: String.t()
+    def to_string(cpf) do
+      digits = CPF.digits(cpf)
+      for i <- 0..10, into: "", do: digits |> elem(i) |> Kernel.to_string()
     end
   end
 end
