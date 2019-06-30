@@ -6,7 +6,7 @@ jobs:
       elixir_version:
         description: "Elixir version"
         type: string
-        default: "1.8"
+        default: "1.9"
       steps:
         description: "Steps to execute after build"
         type: steps
@@ -40,12 +40,15 @@ workflows:
   test:
     jobs:
       - build:
-          name: "Elixir 1.8"
+          name: "Elixir 1.9"
           steps:
             - run: mix format --check-formatted
             - run: mix credo --strict
             - run: mix coveralls.circle
             - run: mix dialyzer
+      - build:
+          name: "Elixir 1.8"
+          elixir_version: "1.8"
       - build:
           name: "Elixir 1.7"
           elixir_version: "1.7"

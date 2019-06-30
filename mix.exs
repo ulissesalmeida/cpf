@@ -26,7 +26,7 @@ defmodule CPF.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.20", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: [:dev, :test], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
