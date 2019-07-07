@@ -4,7 +4,7 @@ defmodule CPF.MixProject do
   def project do
     [
       app: :cpf,
-      version: "0.5.1",
+      version: "0.6.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       description: description(),
