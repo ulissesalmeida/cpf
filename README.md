@@ -30,7 +30,7 @@ end
 
 ## Quick Start
 
-You verify if the CPF is valid by calling the function `CPF.valid?/1`:
+You can verify if a CPF is valid by calling the function `CPF.valid?/1`:
 
 ```elixir
 iex> CPF.valid?(563_606_676_73)
@@ -105,6 +105,21 @@ iex> "04485847608" |> CPF.new() |> CPF.format()
 The `CPF.format/1` expects the input be wrapped in the CPF type. Remember, only
 use `CPF.new` with valid CPFs, no other checks are done there. If you need some
 validation, use `CPF.parse/1`.
+
+## Flexibilizing the CPF validation
+
+You can use `CPF.flex/1` when you only care if the user has provided the
+correct number before any validation or parsing. For example:
+
+```elixir
+iex> "04.4.8*58().476-08" |> CPF.flex() |> CPF.valid?()
+true
+
+iex> "04.4.8*58().476-08" |> CPF.flex() |> CPF.parse!() |> CPF.format()
+"044.858.476-08"
+```
+
+It can be useful to take a user's dirty input and format it.
 
 ## Why not other libraries?
 

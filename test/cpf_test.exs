@@ -161,4 +161,14 @@ defmodule CPFTest do
       assert to_integer(cpf) == 4_485_847_608
     end
   end
+
+  describe "flex/1" do
+    import CPF, only: [flex: 1]
+
+    test "returns a string only with the digits" do
+      digits = CPF.flex("    04.4aaa.8*58().47cccddd6-08     ")
+
+      assert digits == "04485847608"
+    end
+  end
 end

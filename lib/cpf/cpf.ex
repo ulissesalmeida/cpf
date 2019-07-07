@@ -200,6 +200,30 @@ defmodule CPF do
     |> trunc()
   end
 
+  @doc """
+  Cleans up all characters of a given input except numbers. It can make CPF
+  validation more flexbile. For example:
+
+  ## Examples
+
+      iex> CPF.flex("  04.4 .8*58().476-08  ")
+      "04485847608"
+
+      iex> "  04.4 .8*58().476-08  " |> CPF.flex() |> CPF.valid?()
+      true
+  """
+  @spec flex(String.t()) :: String.t()
+  def flex(input) when is_binary(input), do: cleanup(input, "")
+
+  @digits ?0..?9
+
+  defp cleanup("", cleaned), do: String.reverse(cleaned)
+
+  defp cleanup(<<char::utf8, rest::binary>>, cleaned) when char in @digits,
+    do: cleanup(rest, <<char::utf8>> <> cleaned)
+
+  defp cleanup(<<_char::utf8, rest::binary>>, cleaned), do: cleanup(rest, cleaned)
+
   @doc false
   def cast(cpf) do
     IO.warn("
