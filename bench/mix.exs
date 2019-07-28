@@ -15,15 +15,16 @@ defmodule Bench.MixProject do
   defp aliases() do
     [
       "bench.validate": ["run validate.exs"],
-      "bench.format": ["run format.exs"]
+      "bench.format": ["run format.exs"],
+      "bench.generate": ["run generate.exs"]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:cpf, "~> 0.6", path: "../", override: true},
-      # {:brcpfcnpj, "~> 0.2.0"},
+      # {:cpf, "~> 0.6", path: "../", override: true},
+      {:brcpfcnpj, "~> 0.2.0"},
       {:benchee, "~> 1.0"}
     ]
   end

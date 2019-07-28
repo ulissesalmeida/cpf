@@ -215,14 +215,56 @@ defmodule CPF do
   @spec flex(String.t()) :: String.t()
   def flex(input) when is_binary(input), do: cleanup(input, "")
 
-  @digits ?0..?9
-
   defp cleanup("", cleaned), do: String.reverse(cleaned)
 
-  defp cleanup(<<char::utf8, rest::binary>>, cleaned) when char in @digits,
+  defp cleanup(<<char::utf8, rest::binary>>, cleaned) when char in ?0..?9,
     do: cleanup(rest, <<char::utf8>> <> cleaned)
 
   defp cleanup(<<_char::utf8, rest::binary>>, cleaned), do: cleanup(rest, cleaned)
+
+  @doc """
+  Generates a random valid CPF.
+
+  ## Examples
+
+      iex> CPF.generate() |> to_string() |> CPF.valid?
+      true
+  """
+  @spec generate :: t()
+  def generate, do: gen()
+
+  @doc """
+    Generates a predictable random valid CPF wit the given `seed`.
+
+  ## Examples
+
+    iex> seed = {:exrop, [40_738_532_209_663_091 | 74_220_507_755_601_615]}
+    iex> seed |> CPF.generate() |> CPF.format()
+    "671.835.731-68"
+  """
+  @spec generate(seed :: :rand.builtin_alg() | :rand.state() | :rand.export_state()) :: t()
+  def generate(seed) do
+    :rand.seed(seed)
+    gen()
+  end
+
+  defp gen do
+    digits = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+    digits =
+      Enum.reduce(0..8, digits, fn index, digits ->
+        put_elem(digits, index, Enum.random(0..9))
+      end)
+
+    {v1, v2} = calculate_verifier_digits(digits)
+
+    digits =
+      digits
+      |> put_elem(9, v1)
+      |> put_elem(10, v2)
+
+    %CPF{digits: digits}
+  end
 
   @doc false
   def cast(cpf) do

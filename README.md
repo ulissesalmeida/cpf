@@ -106,6 +106,27 @@ The `CPF.format/1` expects the input be wrapped in the CPF type. Remember, only
 use `CPF.new` with valid CPFs, no other checks are done there. If you need some
 validation, use `CPF.parse/1`.
 
+## Generating random CPFs for testing
+
+You can generate valid CPF numbers by using `CPF.generate/0`:
+
+```elixir
+iex> CPF.generate()
+#CPF<671.835.731-68>
+
+iex> CPF.generate() |> to_string()
+"67183573168"
+
+iex> CPF.generate() |> CPF.to_integer()
+67183573168
+
+iex> CPF.generateI() |> CPF.format()
+"671.835.731-68"
+```
+
+After you generate the CPF, you can turn the CPF into a formatted string, or
+convert to a string digits, or convert to integer.
+
 ## Flexibilizing the CPF validation
 
 You can use `CPF.flex/1` when you only care if the user has provided the

@@ -166,9 +166,27 @@ defmodule CPFTest do
     import CPF, only: [flex: 1]
 
     test "returns a string only with the digits" do
-      digits = CPF.flex("    04.4aaa.8*58().47cccddd6-08     ")
+      digits = flex("    04.4aaa.8*58().47cccddd6-08     ")
 
       assert digits == "04485847608"
+    end
+  end
+
+  describe "generate/0" do
+    import CPF, only: [generate: 0, generate: 1]
+
+    test "generate valid CPFs" do
+      for _i <- 0..1000 do
+        cpf = generate() |> to_string()
+
+        assert CPF.valid?(cpf)
+      end
+    end
+
+    test "returns a predictable CPF by seeding" do
+      seed = {:exrop, [40_738_532_209_663_091 | 74_220_507_755_601_615]}
+
+      assert seed |> generate() |> to_string() == "67183573168"
     end
   end
 end
