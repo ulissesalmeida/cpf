@@ -32,15 +32,15 @@ defmodule CPF do
   if the given `String.t` or the integer was validated before.
   """
   @spec new(String.t() | pos_integer) :: t
-  def new(cpf) when is_integer(cpf) and cpf >= 0 do
+  def new(int_digits) when is_integer(int_digits) and int_digits >= 0 do
     %__MODULE__{
-      digits: to_digits(cpf)
+      digits: to_digits(int_digits)
     }
   end
 
-  def new(cpf) when is_binary(cpf) do
+  def new(string_digits) when is_binary(string_digits) do
     %__MODULE__{
-      digits: cpf |> String.to_integer() |> to_digits()
+      digits: string_digits |> String.to_integer() |> to_digits()
     }
   end
 
@@ -71,14 +71,14 @@ defmodule CPF do
       false
   """
   @spec valid?(input :: String.t() | pos_integer) :: boolean
-  def valid?(cpf) when (is_integer(cpf) and cpf >= 0) or is_binary(cpf) do
-    case parse(cpf) do
+  def valid?(input) when (is_integer(input) and input >= 0) or is_binary(input) do
+    case parse(input) do
       {:ok, _cpf} -> true
       {:error, _reason} -> false
     end
   end
 
-  def valid?(_cpf) do
+  def valid?(_input) do
     IO.warn("""
     Calling `CPF.valid?/1` with invalid types is deprecated and will be removed
     on version 1.0.0. Only call this function with positive integers or strings.
@@ -125,8 +125,8 @@ defmodule CPF do
       {:error, %CPF.ParsingError{reason: :invalid_verifier}}
   """
   @spec parse(String.t() | pos_integer) :: {:ok, t()} | {:error, CPF.ParsingError.t()}
-  def parse(cpf) when is_integer(cpf) and cpf >= 0 do
-    digits = Integer.digits(cpf)
+  def parse(int_input) when is_integer(int_input) and int_input >= 0 do
+    digits = Integer.digits(int_input)
 
     with {:ok, digits} <- add_padding(digits),
          {:ok, digits} <- skip_same_digits(digits),
@@ -147,10 +147,10 @@ defmodule CPF do
     parse(left_digits <> middle_digits <> right_digits <> verifier_digits)
   end
 
-  def parse(cpf) when is_binary(cpf) do
-    case Integer.parse(cpf) do
-      {cpf_int, ""} ->
-        parse(cpf_int)
+  def parse(str_input) when is_binary(str_input) do
+    case Integer.parse(str_input) do
+      {int_input, ""} ->
+        parse(int_input)
 
       _ ->
         {:error, %CPF.ParsingError{reason: :invalid_format}}
@@ -170,8 +170,8 @@ defmodule CPF do
       ** (CPF.ParsingError) invalid_verifier
   """
   @spec parse!(String.t() | pos_integer) :: t()
-  def parse!(cpf) do
-    case parse(cpf) do
+  def parse!(input) do
+    case parse(input) do
       {:ok, cpf} -> cpf
       {:error, exception} -> raise exception
     end
@@ -238,9 +238,9 @@ defmodule CPF do
 
   ## Examples
 
-    iex> seed = {:exrop, [40_738_532_209_663_091 | 74_220_507_755_601_615]}
-    iex> seed |> CPF.generate() |> CPF.format()
-    "671.835.731-68"
+      iex> seed = {:exrop, [40_738_532_209_663_091 | 74_220_507_755_601_615]}
+      iex> seed |> CPF.generate() |> CPF.format()
+      "671.835.731-68"
   """
   @spec generate(seed :: :rand.builtin_alg() | :rand.state() | :rand.export_state()) :: t()
   def generate(seed) do
