@@ -142,6 +142,29 @@ iex> "04.4.8*58().476-08" |> CPF.flex() |> CPF.parse!() |> CPF.format()
 
 It can be useful to take a user's dirty input and format it.
 
+## Command line
+
+You can generate random valid CPFs with:
+
+```shell
+$ mix cpf.gen
+194.925.115-25
+
+$ mix cpf.gen --format=digits --count=2
+19492511525
+65313188640
+```
+
+You can also check if CPF are valid with:
+
+```shell
+$ mix cpf.check 194.925.115-25
+valid
+```
+
+Run `mix help cpf.gen` and `mix help cpf.check` to read a further explanation
+about the commands available options.
+
 ## Why not other libraries?
 
 This library runs 3 times faster and consume 3 times less memory and work with

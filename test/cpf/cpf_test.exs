@@ -1,7 +1,7 @@
 defmodule CPFTest do
   use ExUnit.Case, async: true
 
-  import CPF.Test.Support
+  import CPF.Test.Helpers
 
   doctest CPF
 
