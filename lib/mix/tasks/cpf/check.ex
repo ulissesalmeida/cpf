@@ -8,19 +8,19 @@ defmodule Mix.Tasks.Cpf.Check do
 
   ## Examples
 
-      $ mix cpf.check 194.925.115-25
+      > mix cpf.check 194.925.115-25
       valid
 
-      $ mix cpf.check 194.925.115-24
+      > mix cpf.check 194.925.115-24
       invalid
 
-      $ mix cpf.check 194.925.115-25 19492511525
+      > mix cpf.check 194.925.115-25 19492511525
       valid
 
-      $ mix cpf.check 194.925.115.25
+      > mix cpf.check 194.925.115.25
       invalid
 
-      $ mix cpf.check 194.925.115.25 --flex
+      > mix cpf.check 194.925.115.25 --flex
       valid
   """
 
@@ -54,7 +54,7 @@ defmodule Mix.Tasks.Cpf.Check do
     error_exit("Invalid value for `#{opt}`")
   end
 
-  def valid?(input, flex?) do
+  defp valid?(input, flex?) do
     if flex? do
       input |> CPF.flex() |> CPF.valid?()
     else
