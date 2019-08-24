@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2019-08-24
+### Fix
+- Mix tasks examples
+- Visibility of the public mix tasks functions (they should be private)
+
 ## [0.8.0] - 2019-08-24
 ### Added
 - Added `mix cpf.gen` and `mix cpf.check` tasks
