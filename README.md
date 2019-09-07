@@ -165,6 +165,59 @@ valid
 Run `mix help cpf.gen` and `mix help cpf.check` to read a further explanation
 about the commands available options.
 
+## Ecto Integration
+
+If you have `ecto` installed in your application, you can use the module
+`CPF.Ecto.Type` to cast and validate CPF fields easily. For example:
+
+```elixir
+defmodule MyApp.Profile do
+  use Ecto.Schema
+
+  import Ecto.Changeset
+  # Import the parameterized type function
+  import CPF.Ecto.Type
+
+  schema "profiles" do
+    # use `cpf_type/1` in the field type definition
+    field :cpf, cpf_type(:string)
+  end
+
+  def new(enum \\ %{}), do: struct!(__MODULE__, enum)
+
+  def changeset(profile, params), do: cast(profile, params, __schema__(:fields))
+end
+```
+
+It will prevent any attempt to insert an invalid CPF when using your
+schema module. For example:
+
+```elixir
+{:error, changeset} =
+  Profile.new()
+  |> Profile.changeset(%{cpf: "abilidebob"})
+  |> MyApp.Repo.insert()
+
+{"is invalid", [reason: :invalid_format]} = Keyword.get(changeset.errors, :cpf)
+```
+
+Note: it will also prevent queries with invalid CPFs by raising casting error.
+You might need workaround it if you want to display an empty result with invalid
+CPFs. For example:
+
+```elixir
+if CPF.valid?(cpf) do
+  query = from p in Profile, where: p.cpf == ^cpf
+  Repo.all(query)
+else
+  []
+end
+```
+
+If you're working in a search form, you might want to create a
+`search_form_changeset` and validate the search inputs before querying the
+database.
+
 ## Why not other libraries?
 
 This library runs 3 times faster and consume 3 times less memory and work with

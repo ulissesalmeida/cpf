@@ -14,6 +14,7 @@ defmodule CPF.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       name: "CPF",
       docs: docs(),
+      aliases: aliases(),
       dialyzer: [
         plt_add_apps: [:mix, :ex_unit]
       ]
@@ -31,7 +32,10 @@ defmodule CPF.MixProject do
       {:ex_doc, "~> 0.20", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.10", only: [:dev, :test], runtime: false}
+      {:excoveralls, "~> 0.10", only: [:dev, :test], runtime: false},
+      {:ecto, "~> 3.2.0", optional: true},
+      {:ecto_sql, "~> 3.2.0", only: [:dev, :test]},
+      {:postgrex, "~> 0.15.0", only: [:test]}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]
@@ -57,6 +61,12 @@ defmodule CPF.MixProject do
     [
       source_url: "https://github.com/ulissesalmeida/cpf",
       extras: ["README.md"]
+    ]
+  end
+
+  def aliases do
+    [
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end
 end

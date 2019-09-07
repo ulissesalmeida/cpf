@@ -1,4 +1,4 @@
-defmodule CPF.Test.Helpers do
+defmodule CPF.Support.Helpers do
   @moduledoc false
 
   alias __MODULE__

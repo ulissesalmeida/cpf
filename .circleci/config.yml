@@ -14,6 +14,11 @@ jobs:
           - run: mix test
     docker:
       - image: circleci/elixir:<< parameters.elixir_version >>
+      - image: circleci/postgres:12-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: cpf_test
+          POSTGRES_PASSWORD: postgres
     environment:
       MIX_ENV: test
     working_directory: ~/repo

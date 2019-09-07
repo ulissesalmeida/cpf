@@ -45,6 +45,21 @@ defmodule CPF do
   end
 
   @doc """
+  Checks if the given argument is `CPF.t()` type.
+
+  ## Examples
+
+      iex> CPF.cpf?(563_606_676_73)
+      false
+
+      iex> "56360667673" |> CPF.new() |> CPF.cpf?()
+      true
+  """
+  @spec cpf?(any) :: true | false
+  def cpf?(%CPF{}), do: true
+  def cpf?(_), do: false
+
+  @doc """
   Returns `true` the given `cpf` is valid, otherwise `false`.
 
   ## Examples
