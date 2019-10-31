@@ -92,15 +92,6 @@ defmodule CPF do
     end
   end
 
-  def valid?(_input) do
-    IO.warn("""
-    Calling `CPF.valid?/1` with invalid types is deprecated and will be removed
-    on version 1.0.0. Only call this function with positive integers or strings.
-    """)
-
-    false
-  end
-
   @doc """
   Returns a formatted string from a given  `cpf`.
 

@@ -39,8 +39,6 @@ defmodule CPFTest do
                     123_456_789_10,
                     "123.456.789-10",
                     0,
-                    # credo:disable-for-next-line
-                    123_456_789_09.0,
                     "123456789090"
                   ] ++ Enum.map(1..9, &to_11_digits/1)
 
