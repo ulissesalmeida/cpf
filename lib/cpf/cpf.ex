@@ -280,30 +280,6 @@ defmodule CPF do
     %CPF{digits: digits}
   end
 
-  @doc false
-  def cast(cpf) do
-    IO.warn("
-    `CPF.cast/1` is deprecated and will be removed on version 1.0.0. Call `CPF.parse/1`
-    ")
-
-    case parse(cpf) do
-      {:error, %CPF.ParsingError{reason: reason}} -> {:error, %CPF.CastingError{reason: reason}}
-      ok -> ok
-    end
-  end
-
-  @doc false
-  def cast!(cpf) do
-    IO.warn("
-    `CPF.cast!/1` is deprecated and will be removed on version 1.0.0. Call `CPF.parse!/1`
-    ")
-
-    case cast(cpf) do
-      {:ok, cpf} -> cpf
-      {:error, exception} -> raise exception
-    end
-  end
-
   defp add_padding(digits) do
     padding = 11 - length(digits)
 
