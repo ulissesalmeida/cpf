@@ -9,6 +9,7 @@ defmodule CPF.Support.Profile do
   schema "profiles" do
     field :string_cpf, cpf_type(:string)
     field :integer_cpf, cpf_type(:bigint)
+    field :cpf, :string
   end
 
   def new(enum \\ %{}), do: struct!(__MODULE__, enum)

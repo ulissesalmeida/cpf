@@ -10,6 +10,11 @@ defmodule CPF do
   @typep digit :: pos_integer()
 
   @typedoc """
+  A text in `String.t()` or a positive integer
+  """
+  @type input :: String.t() | pos_integer
+
+  @typedoc """
   The CPF type. It' composed of eleven digits(0-9]).
   """
   @opaque t :: %__MODULE__{
@@ -30,16 +35,16 @@ defmodule CPF do
   This function doesn't check if CPF numbers are valid, only use this function
   if the given `String.t` or the integer was validated before.
   """
-  @spec new(String.t() | pos_integer) :: t
-  def new(pos_integer) when is_pos_integer(pos_integer) do
+  @spec new(input) :: t
+  def new(valid_cpf) when is_pos_integer(valid_cpf) do
     %__MODULE__{
-      digits: to_digits(pos_integer)
+      digits: to_digits(valid_cpf)
     }
   end
 
-  def new(string_digits) when is_binary(string_digits) do
+  def new(valid_cpf) when is_binary(valid_cpf) do
     %__MODULE__{
-      digits: string_digits |> String.to_integer() |> to_digits()
+      digits: valid_cpf |> String.to_integer() |> to_digits()
     }
   end
 
@@ -84,7 +89,7 @@ defmodule CPF do
       iex> CPF.valid?("56360667672")
       false
   """
-  @spec valid?(input :: String.t() | pos_integer) :: boolean
+  @spec valid?(input :: input) :: boolean
   def valid?(input) when is_pos_integer(input) or is_binary(input) do
     case parse(input) do
       {:ok, _cpf} -> true
@@ -129,9 +134,9 @@ defmodule CPF do
       iex> CPF.parse(563_606_676_72)
       {:error, %CPF.ParsingError{reason: :invalid_verifier}}
   """
-  @spec parse(String.t() | pos_integer) :: {:ok, t()} | {:error, CPF.ParsingError.t()}
-  def parse(int_input) when is_pos_integer(int_input) do
-    digits = Integer.digits(int_input)
+  @spec parse(input) :: {:ok, t()} | {:error, CPF.ParsingError.t()}
+  def parse(input) when is_pos_integer(input) do
+    digits = Integer.digits(input)
 
     with {:ok, digits} <- add_padding(digits),
          {:ok, digits} <- skip_same_digits(digits),
@@ -152,8 +157,8 @@ defmodule CPF do
     parse(left_digits <> middle_digits <> right_digits <> verifier_digits)
   end
 
-  def parse(str_input) when is_binary(str_input) do
-    case Integer.parse(str_input) do
+  def parse(input) when is_binary(input) do
+    case Integer.parse(input) do
       {int_input, ""} ->
         parse(int_input)
 
@@ -174,7 +179,7 @@ defmodule CPF do
       iex> CPF.parse!(563_606_676_72)
       ** (CPF.ParsingError) invalid_verifier
   """
-  @spec parse!(String.t() | pos_integer) :: t()
+  @spec parse!(input) :: t()
   def parse!(input) do
     case parse(input) do
       {:ok, cpf} -> cpf
@@ -207,7 +212,7 @@ defmodule CPF do
 
   @doc """
   Cleans up all characters of a given input except numbers. It can make CPF
-  validation more flexbile. For example:
+  validation more flexbile.
 
   ## Examples
 

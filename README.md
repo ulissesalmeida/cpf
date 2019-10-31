@@ -168,7 +168,13 @@ about the commands available options.
 ## Ecto Integration
 
 If you have `ecto` installed in your application, you can use the module
-`CPF.Ecto.Type` to cast and validate CPF fields easily. For example:
+`CPF.Ecto.Type` or `CPF.Ecto.Changeset` to cast and validate CPF fields.
+
+
+### Using `CPF.Ecto.Type`
+
+If you like the strictness of types you can user `CPF.Ecto.Type` functions to
+define in your schema the CPF field type. For example:
 
 ```elixir
 defmodule MyApp.Profile do
@@ -217,6 +223,37 @@ end
 If you're working in a search form, you might want to create a
 `search_form_changeset` and validate the search inputs before querying the
 database.
+
+### Using `CPF.Ecto.Changeset`
+
+If you don't want use type in your CPF fields, you can use
+`CPF.Ecto.Changeset.validate_cpf/2` function to validate a field in your
+changeset. Example:
+
+```elixir
+CPF.Ecto.Changeset.validate_cpf(changeset, :cpf)
+```
+
+Using this approach you need manually cast the CPF field to store in uniform
+way. As example, you can do that using the `Ecto.Change.prepare_changes/1`.
+Example:
+
+```elixir
+changeset
+|> CPF.Ecto.Changeset.validate_cpf(:cpf)
+|> Ecto.Changeset.prepare_changes(fn changeset ->
+  if input = Ecto.Changeset.get_change(changeset, :cpf) do
+    string_cpf = input |> CPF.parse!() |> to_string()
+    Ecto.Changeset.put_change(changeset, :cpf, string_cpf)
+  else
+    changeset
+  end
+end)
+```
+
+The `prepare_changes/2` will be called after the validation and before insert or
+update in the repository. It gives the developer the opportunity to transform
+the CPF value in any way they want.
 
 ## Why not other libraries?
 

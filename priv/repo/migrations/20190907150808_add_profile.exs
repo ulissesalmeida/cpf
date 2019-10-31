@@ -5,6 +5,7 @@ defmodule CPF.Support.Repo.Migrations.AddProfile do
     create table(:profiles) do
       add :string_cpf, :string
       add :integer_cpf, :bigint
+      add :cpf, :string
     end
   end
 end
