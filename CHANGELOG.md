@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2019-10-31
+
+### Added
+- Add `CPF.Ecto.Type` feature
+- Add `CPF.Ecto.Changeset` feature
+
+### Removed
+
+- Removed support for wrong arguments in `CPF.valid?/1`
+- Deleted `CPF.cast/1` and `CPF.cast!/1` functions
+- Removed Elixir 1.5 support
+
 ## [0.8.1] - 2019-08-24
 ### Fix
 - Mix tasks examples
