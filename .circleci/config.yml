@@ -60,6 +60,3 @@ workflows:
       - build:
           name: "Elixir 1.6"
           elixir_version: "1.6"
-      - build:
-          name: "Elixir 1.5"
-          elixir_version: "1.5"

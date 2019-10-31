@@ -5,8 +5,7 @@ defmodule CPF do
 
   defstruct [:digits]
 
-  # NOTE: Remove Elixir 1.5 support when lauching CPF 1.0
-  # defguardp is_pos_integer(number) when is_integer(number) and number >= 0
+  defguardp is_pos_integer(number) when is_integer(number) and number >= 0
 
   @typep digit :: pos_integer()
 
@@ -32,9 +31,9 @@ defmodule CPF do
   if the given `String.t` or the integer was validated before.
   """
   @spec new(String.t() | pos_integer) :: t
-  def new(int_digits) when is_integer(int_digits) and int_digits >= 0 do
+  def new(pos_integer) when is_pos_integer(pos_integer) do
     %__MODULE__{
-      digits: to_digits(int_digits)
+      digits: to_digits(pos_integer)
     }
   end
 
@@ -86,7 +85,7 @@ defmodule CPF do
       false
   """
   @spec valid?(input :: String.t() | pos_integer) :: boolean
-  def valid?(input) when (is_integer(input) and input >= 0) or is_binary(input) do
+  def valid?(input) when is_pos_integer(input) or is_binary(input) do
     case parse(input) do
       {:ok, _cpf} -> true
       {:error, _reason} -> false
@@ -140,7 +139,7 @@ defmodule CPF do
       {:error, %CPF.ParsingError{reason: :invalid_verifier}}
   """
   @spec parse(String.t() | pos_integer) :: {:ok, t()} | {:error, CPF.ParsingError.t()}
-  def parse(int_input) when is_integer(int_input) and int_input >= 0 do
+  def parse(int_input) when is_pos_integer(int_input) do
     digits = Integer.digits(int_input)
 
     with {:ok, digits} <- add_padding(digits),
