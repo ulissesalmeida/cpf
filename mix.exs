@@ -30,11 +30,11 @@ defmodule CPF.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.20", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: [:dev, :test], runtime: false},
-      {:ecto, "~> 3.2.0", optional: true},
-      {:ecto_sql, "~> 3.2.0", only: [:dev, :test]},
+      {:ecto, "~> 3.2", optional: true},
+      {:ecto_sql, "~> 3.2", only: [:dev, :test], optional: true},
       {:postgrex, "~> 0.15.0", only: [:test]}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}

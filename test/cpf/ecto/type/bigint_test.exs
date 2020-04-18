@@ -16,13 +16,38 @@ defmodule CPF.Ecto.Type.BigintTest do
     end
   end
 
+  test "insert array of string CPFs" do
+    cpf = CPF.generate()
+
+    profile = Repo.insert!(%Profile{cpf_integer_list: [cpf]})
+    profile_from_db = Repo.get(Profile, profile.id)
+
+    assert profile_from_db.cpf_integer_list == [cpf]
+  end
+
+  test "insert embeded profile" do
+    cpf = CPF.generate()
+
+    profile =
+      Repo.insert!(%Profile{
+        embed_profile: %EmbedProfile{
+          integer_cpf: cpf
+        }
+      })
+
+    profile_from_db = Repo.get(Profile, profile.id)
+
+    assert profile_from_db.embed_profile.integer_cpf == cpf
+  end
+
   test "queries by CPF" do
     cpf = CPF.generate()
     profile = Repo.insert!(%Profile{integer_cpf: cpf})
 
     query = from p in Profile, where: p.integer_cpf == ^cpf
 
-    assert [^profile] = Repo.all(query)
+    assert [found_profile] = Repo.all(query)
+    assert found_profile.id == profile.id
   end
 
   test "queries by CPF string" do
@@ -31,7 +56,8 @@ defmodule CPF.Ecto.Type.BigintTest do
 
     query = from p in Profile, where: p.integer_cpf == ^to_string(cpf)
 
-    assert [^profile] = Repo.all(query)
+    assert [found_profile] = Repo.all(query)
+    assert found_profile.id == profile.id
   end
 
   test "queries by CPF integer" do
@@ -40,7 +66,8 @@ defmodule CPF.Ecto.Type.BigintTest do
 
     query = from p in Profile, where: p.integer_cpf == ^CPF.to_integer(cpf)
 
-    assert [^profile] = Repo.all(query)
+    assert [found_profile] = Repo.all(query)
+    assert found_profile.id == profile.id
   end
 
   test "doesn't query with invalid CPFs." do

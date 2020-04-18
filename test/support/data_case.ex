@@ -8,7 +8,7 @@ defmodule CPF.DataCase do
 
   using do
     quote do
-      alias CPF.Support.{Profile, Repo}
+      alias CPF.Support.{EmbedProfile, Profile, Repo}
 
       import Ecto
       import Ecto.Changeset

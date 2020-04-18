@@ -4,8 +4,10 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     use Ecto.Type
 
+    @impl true
     def type, do: :string
 
+    @impl true
     def cast(%CPF{} = cpf), do: {:ok, cpf}
 
     def cast(input) do
@@ -15,10 +17,15 @@ if Code.ensure_loaded?(Ecto.Type) do
       end
     end
 
+    @impl true
     def load(data) when is_binary(data), do: {:ok, CPF.new(data)}
 
+    @impl true
     def dump(cpf) do
       if CPF.cpf?(cpf), do: {:ok, to_string(cpf)}, else: :error
     end
+
+    @impl true
+    def embed_as(_format), do: :dump
   end
 end

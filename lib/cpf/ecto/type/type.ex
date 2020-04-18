@@ -17,9 +17,6 @@ if Code.ensure_loaded?(Ecto.Type) do
         end
     """
 
-    require __MODULE__.Bigint
-    require __MODULE__.String
-
     @doc """
       A parameterized `type` macro function.
 
@@ -29,13 +26,13 @@ if Code.ensure_loaded?(Ecto.Type) do
     @spec cpf_type(:bigint | :string) :: atom
     defmacro cpf_type(:bigint) do
       quote do
-        unquote(__MODULE__.Bigint)
+        CPF.Ecto.Type.Bigint
       end
     end
 
     defmacro cpf_type(:string) do
       quote do
-        unquote(__MODULE__.String)
+        CPF.Ecto.Type.String
       end
     end
   end
