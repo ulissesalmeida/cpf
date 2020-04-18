@@ -3,6 +3,13 @@ defmodule CPF do
   CPF module that provides functions to verify if a CPF is valid.
   """
 
+  unless Version.match?(System.version(), ">= 1.7.0") do
+    IO.warn("""
+    You're running an old Elixir version. CPF will soon support Elixir versions
+    above 1.7.0.
+    """)
+  end
+
   defstruct [:digits]
 
   defguardp is_pos_integer(number) when is_integer(number) and number >= 0
