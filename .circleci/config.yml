@@ -57,7 +57,7 @@ commands:
       - save_cache:
           key: v3-plt-<< parameters.elixir_version >>-{{ checksum "mix.lock" }}-{{ .Revision }}
           paths:
-            - _build
+            - plts
             - ~/.mix
 
   restore_plt:

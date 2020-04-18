@@ -16,8 +16,10 @@ defmodule CPF.MixProject do
       docs: docs(),
       aliases: aliases(),
       dialyzer: [
-        plt_add_apps: [:mix, :ex_unit]
-      ]
+        plt_file: {:no_warn, "plts/dialyzer.plt"},
+        plt_add_apps: [:mix, :ex_unit, :ecto, :ecto_sql]
+      ],
+      preferred_cli_env: [dialyzer: :test]
     ]
   end
 

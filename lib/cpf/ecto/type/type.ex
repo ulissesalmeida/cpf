@@ -23,7 +23,7 @@ if Code.ensure_loaded?(Ecto.Type) do
       - `cpf_type(:bigint)` is a alias for `CPF.Ecto.Type.Bigint`
       - `cpf_type(:string)` is a alias for `CPF.Ecto.Type.String`
     """
-    @spec cpf_type(:bigint | :string) :: atom
+    @spec cpf_type(:bigint | :string) :: Macro.t()
     defmacro cpf_type(:bigint) do
       quote do
         CPF.Ecto.Type.Bigint
