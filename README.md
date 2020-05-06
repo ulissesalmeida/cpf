@@ -120,7 +120,7 @@ iex> CPF.generate() |> to_string()
 iex> CPF.generate() |> CPF.to_integer()
 67183573168
 
-iex> CPF.generateI() |> CPF.format()
+iex> CPF.generate() |> CPF.format()
 "671.835.731-68"
 ```
 
