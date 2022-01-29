@@ -34,4 +34,4 @@ elixir:
 
   COPY --dir lib ./
 
-  RUN mix compile
+  RUN mix compile --warning-as-errors
