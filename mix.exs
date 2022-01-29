@@ -5,7 +5,7 @@ defmodule CPF.MixProject do
     [
       app: :cpf,
       version: "1.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
@@ -42,17 +42,10 @@ defmodule CPF.MixProject do
   end
 
   defp ecto_deps do
-    if Version.match?(System.version(), ">= 1.7.0") do
-      [
-        {:ecto, "~> 3.2", optional: true},
-        {:ecto_sql, "~> 3.2", only: [:dev, :test], optional: true}
-      ]
-    else
-      [
-        {:ecto, "~> 3.2.0", optional: true},
-        {:ecto_sql, "~> 3.2.0", only: [:dev, :test], optional: true}
-      ]
-    end
+    [
+      {:ecto, "~> 3.2", optional: true},
+      {:ecto_sql, "~> 3.2", only: [:dev, :test], optional: true}
+    ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
