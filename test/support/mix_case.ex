@@ -3,6 +3,12 @@ defmodule CPF.MixCase do
 
   use ExUnit.CaseTemplate
 
+  using do
+    quote do
+      @moduletag mix_case: true
+    end
+  end
+
   setup _tags do
     Mix.shell(Mix.Shell.Process)
 

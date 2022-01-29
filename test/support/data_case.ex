@@ -13,7 +13,14 @@ defmodule CPF.DataCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+
+      @moduletag data_case: true
     end
+  end
+
+  setup_all do
+    start_supervised!(CPF.Support.Repo)
+    Ecto.Adapters.SQL.Sandbox.mode(CPF.Support.Repo, :manual)
   end
 
   setup tags do

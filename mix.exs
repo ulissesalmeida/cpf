@@ -19,7 +19,7 @@ defmodule CPF.MixProject do
         plt_file: {:no_warn, "plts/dialyzer.plt"},
         plt_add_apps: [:mix, :ex_unit, :ecto, :ecto_sql]
       ],
-      preferred_cli_env: [dialyzer: :test]
+      preferred_cli_env: [dialyzer: :test, unit_test: :test]
     ]
   end
 
@@ -31,7 +31,7 @@ defmodule CPF.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.20", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.20", only: [:docs], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: [:dev, :test], runtime: false},
@@ -73,7 +73,8 @@ defmodule CPF.MixProject do
 
   def aliases do
     [
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      unit_test: ["test --exclude data_case"]
     ]
   end
 end
