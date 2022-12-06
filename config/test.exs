@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :cpf, CPF.Support.Repo,
   username: System.get_env("POSTGRES_USER") || "postgres",
