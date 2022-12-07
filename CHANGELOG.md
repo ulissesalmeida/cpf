@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2022-12-07
+### Added
+- Official support from Elixir 1.11 to Elixir 1.14. Thanks [@ayrat555](https://github.com/ayrat555)
+
+### Removed
+
+- Dropped support for Elixir versions below 1.11
+
 ## [1.1.0] - 2020-04-18
 
 ## Added

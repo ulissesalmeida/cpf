@@ -23,7 +23,7 @@ by adding `cpf` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:cpf, "~> 1.0"}
+    {:cpf, "~> 1.2"}
   ]
 end
 ```
