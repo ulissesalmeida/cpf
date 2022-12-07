@@ -26,7 +26,7 @@ defmodule CPF.Support.Profile do
     field :integer_cpf, cpf_type(:bigint)
     field :cpf, :string
 
-    field :cpf_string_list, {:array, cpf_type(:string)}, deafult: []
+    field :cpf_string_list, {:array, cpf_type(:string)}, default: []
     field :cpf_integer_list, {:array, cpf_type(:bigint)}, default: []
 
     embeds_one :embed_profile, EmbedProfile

@@ -25,7 +25,9 @@ defmodule CPF.MixProject do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    []
+    [
+      extra_applications: [:logger]
+    ]
   end
 
   # Run "mix help deps" to learn about dependencies.
@@ -35,7 +37,7 @@ defmodule CPF.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: [:dev, :test], runtime: false},
-      {:postgrex, "~> 0.15.0", only: [:test]}
+      {:postgrex, "~> 0.16.5", only: [:test]}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ] ++ ecto_deps()
@@ -43,8 +45,8 @@ defmodule CPF.MixProject do
 
   defp ecto_deps do
     [
-      {:ecto, "~> 3.2", optional: true},
-      {:ecto_sql, "~> 3.2", only: [:dev, :test], optional: true}
+      {:ecto, "~> 3.9", optional: true},
+      {:ecto_sql, "~> 3.9", only: [:dev, :test], optional: true}
     ]
   end
 
