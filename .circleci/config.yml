@@ -5,7 +5,7 @@ aliases:
     elixir_version:
       description: "Elixir version"
       type: string
-      default: "1.10"
+      default: "1.14"
 commands:
   save_deps:
     description: "Cache cpf's dependencies"
@@ -87,8 +87,8 @@ jobs:
         description: "Steps to execute after build"
         type: steps
     docker:
-      - image: circleci/elixir:<< parameters.elixir_version >>
-      - image: circleci/postgres:12-alpine
+      - image: cimg/elixir:<< parameters.elixir_version >>
+      - image: cimg/postgres:15.0
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: cpf_test
@@ -111,7 +111,7 @@ workflows:
   test:
     jobs:
       - build:
-          name: "Elixir 1.10"
+          name: "Elixir 1.14"
           steps:
             - restore_app
             - run: mix format --check-formatted
@@ -123,26 +123,20 @@ workflows:
             - save_plt
             - run: mix dialyzer
       - build:
-          name: "Elixir 1.9"
-          elixir_version: "1.9"
+          name: "Elixir 1.13"
+          elixir_version: "1.13"
           steps:
             - test:
-                elixir_version: "1.9"
+                elixir_version: "1.13"
       - build:
-          name: "Elixir 1.8"
-          elixir_version: "1.8"
+          name: "Elixir 1.12"
+          elixir_version: "1.12"
           steps:
             - test:
-                elixir_version: "1.8"
+                elixir_version: "1.12"
       - build:
-          name: "Elixir 1.7"
-          elixir_version: "1.7"
+          name: "Elixir 1.11"
+          elixir_version: "1.11"
           steps:
             - test:
-                elixir_version: "1.7"
-      - build:
-          name: "Elixir 1.6"
-          elixir_version: "1.6"
-          steps:
-            - test:
-                elixir_version: "1.6"
+                elixir_version: "1.11"

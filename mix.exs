@@ -5,7 +5,7 @@ defmodule CPF.MixProject do
     [
       app: :cpf,
       version: "1.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
@@ -45,8 +45,8 @@ defmodule CPF.MixProject do
 
   defp ecto_deps do
     [
-      {:ecto, "~> 3.9", optional: true},
-      {:ecto_sql, "~> 3.9", only: [:dev, :test], optional: true}
+      {:ecto, "~> 3.2", optional: true},
+      {:ecto_sql, "~> 3.2", only: [:dev, :test], optional: true}
     ]
   end
 

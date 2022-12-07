@@ -19,8 +19,8 @@ defmodule CPF.DataCase do
   end
 
   setup_all do
-    start_supervised!(CPF.Support.Repo)
-    Ecto.Adapters.SQL.Sandbox.mode(CPF.Support.Repo, :manual)
+    start_supervised!(Repo)
+    Sandbox.mode(Repo, :manual)
   end
 
   setup tags do
