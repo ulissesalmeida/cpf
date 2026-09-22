@@ -144,6 +144,20 @@ It can be useful to take a user's dirty input and format it.
 
 ## Command line
 
+The commands below work inside any project that depends on `cpf`. To use
+them anywhere, without adding `cpf` to a project, install it as a Mix
+archive:
+
+```shell
+$ mix archive.install hex cpf
+```
+
+Or install the unreleased code from GitHub with
+`mix archive.install github ulissesalmeida/cpf`. Building the archive also
+compiles the optional Ecto dependency, which requires Elixir 1.14 or later.
+To remove it, run `mix archive.uninstall cpf-1.2.0`, replacing `1.2.0` with
+the version listed by `mix archive`.
+
 You can generate random valid CPFs with:
 
 ```shell
