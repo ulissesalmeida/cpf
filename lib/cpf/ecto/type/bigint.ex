@@ -3,8 +3,6 @@ if Code.ensure_loaded?(Ecto.Type) do
     @moduledoc false
     use Ecto.Type
 
-    require CPF
-
     @impl true
     def type, do: :bigint
 
